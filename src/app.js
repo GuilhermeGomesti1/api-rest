@@ -1,5 +1,6 @@
 import express from 'express'
 
+
 const app = express()
 
 app.use(express.json())
@@ -19,6 +20,10 @@ function buscarSelecaoPorId(id){
 function buscarIndexSelecao(id){
    return selecoes.findIndex ( selecao => selecao.id == id)
 }
+app.post('/selecoes', (req, res)=>{
+   selecoes.push(req.body)
+   res.status(201).send('Seleção cadastrada com sucesso')
+})
 
 app.get('/', (req, res)  => {
    res.status(200).send('Olá mundo!')
@@ -32,9 +37,11 @@ app.get('/selecoes/:id', (req, res) =>{
    res.json(buscarSelecaoPorId(req.params.id))
 })
 
-app.post('/selecoes', (req, res)=>{
-   selecoes.push(req.body)
-   res.status(201).send('Seleção cadastrada com sucesso')
+app.put('/selecoes/:id', (req, res) =>{
+   let index = buscarIndexSelecao(req.params.id)
+   selecoes[index].selecao = req.body.selecao
+   selecoes[index].grupo = req.body.grupo
+   res.json(selecoes)
 })
 
 app.delete('/selecoes/:id', (req, res) =>{
@@ -44,10 +51,5 @@ app.delete('/selecoes/:id', (req, res) =>{
 })
 
 
-app.put('/selecoes/:id', (req, res) =>{
-   let index = buscarIndexSelecao(req.params.id)
-   selecoes[index].selecao = req.body.selecao
-   selecoes[index].grupo = req.body.grupo
-   res.json(selecoes)
-})
+
 export default app
